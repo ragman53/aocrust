@@ -35,10 +35,15 @@ impl Gift {
         let surface: u32 = 2 * (self.l * self.w + self.w * self.h + self.h * self.l);
         slack + surface
     }
+    fn ribbon(&self) -> u32 {
+        let length: u32 = (2 * self.l + 2 * self.w) + self.l * self.w * self.h;
+        length
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut paper_needed: u32 = 0;
+    let mut ribbon_needed: u32 = 0;
     let input = fs::read_to_string("input.txt")?;
     for (i, line) in input.lines().enumerate() {
         if line.trim().is_empty() {
@@ -48,7 +53,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         let gift: Gift = line.parse::<Gift>()?;
         println!("Line {} {:?}", i, gift);
         paper_needed += gift.paper_sum();
+        ribbon_needed += gift.ribbon();
     }
     println!("Total paper: {}", paper_needed);
+    println!("Total ribbon: {}", ribbon_needed);
     Ok(())
 }
