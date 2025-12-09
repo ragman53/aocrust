@@ -35,27 +35,31 @@ impl Gift {
         let surface: u32 = 2 * (self.l * self.w + self.w * self.h + self.h * self.l);
         slack + surface
     }
-    fn ribbon(&self) -> u32 {
-        let length: u32 = (2 * self.l + 2 * self.w) + self.l * self.w * self.h;
-        length
+    fn ribbon_sum(&self) -> u32 {
+        let wrap: u32 = 2 * self.l + 2 * self.w;
+        let bow: u32 = self.l * self.w * self.h;
+        wrap + bow
+    }
+    fn from_input(input: &str) -> Result<Vec<Self>, Box<dyn Error>> {
+        input
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .map(|line| line.parse::<Self>())
+            .collect()
+    }
+    fn total_paper(gifts: &[Self]) -> u32 {
+        gifts.iter().map(|g| g.paper_sum()).sum()
+    }
+    fn total_ribbon(gifts: &[Self]) -> u32 {
+        gifts.iter().map(|g| g.ribbon_sum()).sum()
     }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut paper_needed: u32 = 0;
-    let mut ribbon_needed: u32 = 0;
     let input = fs::read_to_string("input.txt")?;
-    for (i, line) in input.lines().enumerate() {
-        if line.trim().is_empty() {
-            continue;
-        }
+    let gifts = Gift::from_input(&input)?;
 
-        let gift: Gift = line.parse::<Gift>()?;
-        println!("Line {} {:?}", i, gift);
-        paper_needed += gift.paper_sum();
-        ribbon_needed += gift.ribbon();
-    }
-    println!("Total paper: {}", paper_needed);
-    println!("Total ribbon: {}", ribbon_needed);
+    println!("Total paper: {}", Gift::total_paper(&gifts));
+    println!("Total ribbon: {}", Gift::total_ribbon(&gifts));
     Ok(())
 }
