@@ -31,11 +31,29 @@ impl Santa {
         }
         house.len()
     }
+    fn deliver_second(input: &str) -> usize {
+        let mut house: HashSet<Santa> = HashSet::new();
+        let mut santa = Santa::new(0, 0);
+        let mut robot = Santa::new(0, 0);
+        house.insert(santa);
+        for (i, p) in input.chars().enumerate() {
+            if i % 2 == 0 {
+                santa.move_next(p);
+                house.insert(santa);
+            } else {
+                robot.move_next(p);
+                house.insert(robot);
+            }
+        }
+        house.len()
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let input = fs::read_to_string("input.txt")?;
-    let count = Santa::deliver(&input);
-    println!("Visited House Count: {:?}", count);
+    let part1 = Santa::deliver(&input);
+    let part2 = Santa::deliver_second(&input);
+    println!("PART1 - Visited House Count: {:?}", part1);
+    println!("PART2 - Visited House Count: {:?}", part2);
     Ok(())
 }
